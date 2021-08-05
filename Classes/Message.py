@@ -1,5 +1,6 @@
 import sys , os
 from deep_translator import GoogleTranslator
+from pyrogram.types import ChatPermissions
 sys.path.insert(1, r'C:\Users\ASUS\Desktop\sources\Telegram\werewolf\Darkhelper\V2')
 from Databases.Groups.Message import MessageBase
 from Databases.Groups import GroupsBase
@@ -10,12 +11,20 @@ from Functions.Pointing.Charts.Charts_AND_Draw import reqt
 from Functions.Cv2.Video import Get_Frame
 
 class Message:
-    def __init__(self,message) -> None:
+    def __init__(self,message=None) -> None:
         self.message_id=int(message.message_id)
         self.text=str(message.text)
         self.link=str(message.text)
         self.m=message
         self.link=message
+        self.mute_group = ChatPermissions(can_send_messages=False)
+        self.unmute_group = ChatPermissions(
+            can_send_messages=True,
+            can_send_animations=True,
+            can_send_games=True,
+            can_send_media_messages=True,
+            can_send_polls=True,
+            can_send_stickers=True)
 
     def is_NFSW(self):
         for i in NFSW.NFSW_Texts :
