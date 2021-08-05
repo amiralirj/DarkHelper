@@ -1,7 +1,7 @@
 # DarkHelper 🌖
 ## Features ⚡️
    - Smart anti-apam & anti-NFSW message checker
-   - Tag Members , Entertain facility , ... 
+   - Tag Members , Entertain facility , Welcommer , ... 
 ## How To Install/Use  ⚙️
 - ### Setting up files
     - Clone or download the repository : `git clone https://github.com/amiralirj/DarkHelper.git`
