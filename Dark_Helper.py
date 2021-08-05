@@ -2,12 +2,13 @@
 from Config.Texts.Question.questions import Question_Dict                 #|
 #--------------------------------------------------------------------------| » Importing Pyrogram Client
 from pyrogram import filters                                              #|
-from Config.Info.bot.api_bot import bot                                   #|
+from .Config.Info.bot.api_bot import bot                                   #|
 #--------------------------------------------------------------------------| » Starting Database Tabales Creation
 from Databases import MainBase                                           #-|
 MainBase.start()                                                         #-|
-#--------------------------------------------------------------------------| » Import Classes & asyncio|datetime & os.remove() & Hash Getter & Taggers
+#--------------------------------------------------------------------------| » Import Classes & asyncio|datetime|Time & os.remove() & Hash Getter & Taggers
 import asyncio , datetime                                                #-|
+from time import time                                                    #-|
 from random import choice                                                #-|
 from os import remove                                                    #-|
 from Classes.Admin import Admin                                          #-|
@@ -340,6 +341,87 @@ async def Set_NextGame_Frame_Func(message,group:Group,user:User):
         await message.reply_text(texts.next_setted)
     else:await message.reply_text(texts.how_to_set_next_frame)
 
+#➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
+#➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
+@bot.on_message(MyFilters.admin & filters.command(['ban',f'ban{bot_username}']) & MyFilters.shekar & filters.group , group=-3)
+async def Ban_User(_,message):
+    if message.reply_to_message:
+        User_id=int(message.from_user.id)
+    else:
+        User_id=(message.command[1])
+
+    chat_id=int(message.chat.id)
+    await bot.kick_chat_member(chat_id,User_id)
+    await message.reply_text(texts.usr_banned(User_id))
+
+@bot.on_message(MyFilters.admin & filters.command(['unban',f'unban{bot_username}']) & MyFilters.shekar & filters.group , group=-3)
+async def UnBan_User(_,message):
+    if message.reply_to_message:
+        User_id=int(message.from_user.id)
+    else:
+        User_id=(message.command[1])
+
+    chat_id=int(message.chat.id)
+    await bot.unban_chat_member(chat_id,User_id)
+    await message.reply_text(texts.usr_banned(User_id))
+
+@bot.on_message(MyFilters.admin & filters.command(['tempban',f'tempban{bot_username}']) & MyFilters.shekar & filters.group , group=-3)
+async def TempBan_User(_,message):
+    if message.reply_to_message:
+        User_id=int(message.from_user.id)
+    else:
+        User_id=(message.command[1])
+
+    chat_id=int(message.chat.id)
+    await bot.kick_chat_member(chat_id,
+        User_id,
+        ( int(time()) - ( (message.command[2]) * 60 ) ) )
+    await message.reply_text(texts.temp_banned(User_id,message.command[2]))
+
+@bot.on_message(MyFilters.admin & filters.command(['tempmute',f'tempmute{bot_username}']) & MyFilters.shekar & filters.group , group=-3)
+async def TempMute_User(_,message):
+    if message.reply_to_message:
+        User_id=int(message.from_user.id)
+    else:
+        User_id=(message.command[1])
+
+    chat_id=int(message.chat.id)
+    await bot.restrict_chat_member(chat_id,
+        User_id,Message().mute_group,
+        ( int(time()) - ( (message.command[2]) * 60 ) ) )
+    await message.reply_text(texts.temp_muted(User_id,message.command[2]))
+
+@bot.on_message(MyFilters.admin & filters.command(['mute',f'mute{bot_username}']) & MyFilters.shekar & filters.group , group=-3)
+async def Mute_User(_,message):
+    if message.reply_to_message:
+        User_id=int(message.from_user.id)
+    else:
+        User_id=(message.command[1])
+    chat_id=int(message.chat.id)
+    bot.restrict_chat_member(chat_id,User_id,Message().mute_group)
+    await message.reply_text(texts.muted(User_id))
+
+@bot.on_message(MyFilters.admin & filters.command(['unmute',f'unmute{bot_username}']) & MyFilters.shekar & filters.group , group=-3)
+async def UnMute_User(_,message):
+    if message.reply_to_message:
+        User_id=int(message.from_user.id)
+    else:
+        User_id=(message.command[1])
+    chat_id=int(message.chat.id)
+    bot.restrict_chat_member(chat_id,User_id,Message().unmute_group)
+    await message.reply_text(texts.muted(User_id))
+
+@bot.on_message(~filters.edited & MyFilters.admin & (filters.regex('(?i)^lock$')|filters.regex('^قفل$')),group=-3)
+async def Restrik_All_Members(_,message):
+    if message.chat.permissions.can_send_messages == True :
+        await bot.set_chat_permissions(message.chat.id, Message().mute_group)
+        await message.reply_text(texts.lock)
+    else:
+        await bot.set_chat_permissions(message.chat.id, Message().unmute_group)
+        await message.reply_text(texts.unlock)
+
+
+#➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
 #➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
 @bot.on_message( filters.command(['ray',f'ray{bot_username}']) & MyFilters.shekar & filters.group , group=-3)
 @Instance
