@@ -1,0 +1,8 @@
+deep_translator
+pyrogram
+aiohttp_requests
+numpy
+pandas
+matplotlib
+opencv-python
+requests_async
