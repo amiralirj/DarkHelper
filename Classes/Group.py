@@ -141,6 +141,10 @@ class Group:
         return AdminStatsBase.Show_Gap_All_Admins_Points(self.Main)
 
     @property
+    def Show_Today_Admins_Points(self):
+        return AdminStatsBase.Show_Gap_All_Admins_Points_Today(self.Main)
+
+    @property
     def Admins(self):
         admins=AdminsBase.Show_All_Admins(self.Main)
         return [ admins , len(admins) ]

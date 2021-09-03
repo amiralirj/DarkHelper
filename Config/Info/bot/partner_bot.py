@@ -5,6 +5,6 @@ bot_id= 1753769751                                                       #-|
 #--------------------------------------------------------------------------| » Creating Client & Import Pyrogram
 from pyrogram import Client                                              #-|                          
 bot = Client('amirairj-partner', api_id, api_hash,                       #-|
-workers=300,workdir =r'/root/helper/Dark_Helper/Config/Info/bot')        #-|
+workers=300,workdir =r'/root/helper/Dark_Helper/Config/Info/bot')        #-|YOUR PATH 
 del  api_hash , api_id                                                   #-|
 #--------------------------------------------------------------------------|

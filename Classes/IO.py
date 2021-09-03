@@ -13,14 +13,11 @@ class IO:
                 self.code=str(x[1])
                 self.kind=str(x[2])
             except:print(f'\n\n\n{Text}\n')
-        print(self.code)
 
     def __str__(self) -> str:
         try:
-            print((self.code).decode('utf-8'))
             return (self.code).decode()
         except AttributeError:
-            print(self.code)
             return self.code
             
     def __int__(self) -> str:

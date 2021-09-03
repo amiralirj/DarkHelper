@@ -6,6 +6,6 @@ bot_username='@Darkhelperrobot'#@darkhelperrobot'                        #-|
 #--------------------------------------------------------------------------| » Creating Client & Import Pyrogram
 from pyrogram import Client                                              #-|                          
 bot = Client('amirairj-helper', api_id, api_hash                         #-|  
-,workers=300,workdir =r'/root/helper/crused/V2/Config/Info/bot')         #-|
+,workers=300,workdir =r'/root/helper/crused/V2/Config/Info/bot')         #-| YOUR PATH 
 del  api_hash , api_id                                                   #-|
 #--------------------------------------------------------------------------|

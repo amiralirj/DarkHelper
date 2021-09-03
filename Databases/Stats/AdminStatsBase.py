@@ -11,7 +11,7 @@ def Add_Admin_Point(User_id , Chat_id , join=0 , tag=0 , afk=0 ):
         {'user_id':int(User_id),'tag':int(tag),'game_join':int(join),'AFK':int(afk),'Group_id':int(Chat_id),'time':Date})
     
     else:
-        row=Sql(f'UPDATE adminstats tag=tag+{int(tag)} , game_join=game_join+{int(join)} ,AFK=AFK+{int(afk)}  SET WHERE ')
+        row=Sql(f'UPDATE adminstats SET tag = tag+{int(tag)} , game_join=game_join+{int(join)} ,AFK=AFK+{int(afk)}  SET WHERE ')
     
 
 def Show_Gap_All_Admins_Points(Chat_id : int):

@@ -45,6 +45,9 @@ how_to_bet_correct='''• لطفا مقدار شرطی که میخواهید ر�
 not_Enough_Coin=lambda  Coin : f'''📇 لایت کوین های شما کافی نیست 
 موجودی شما : {Coin} 🪙'''
 
+not_Enough_dolar=lambda  dolar : f'''📇 دلار های شما کافی نیست 
+موجودی شما : {dolar} 🪙'''
+
 bet= '''<code> شرطتون روی کدام تیم ثبت شود ؟ </code>
 💸 @DarkHelperChannel 💸
 '''
@@ -261,7 +264,14 @@ def Group_Pointing_help(Titles):
     txt+='✘AFK\n✘JoinTime\n✘Players\n✘Number of Games\n✘Games Time'
     return txt
 
-afk_players_labels=[ 'Players','AFK']
+async def Analyz_Admin_P(Admin_Tag,Admin_Join,Admin_Afk,User,bot):
+    text='☀️ᴛᴀɢ|ᴀꜰᴋ|ᴊᴏɪɴ☀️ :\n\n'
+    for i in Admin_Tag:
+        text+=f'🔥{Admin_Tag[i]}|{Admin_Afk[i]}|{Admin_Join[i]}🔥{(await User(i).mention(bot))}\n'
+
+    return text
+
+afk_players_labels=['Players','AFK']
 AFK_title='AFK Statics'
 AFK_Pie_Chart=lambda  afk,player :f'''نمودار بالا نشانگر تعداد افک ها را نسبت به کل پلیر ها نشان میدهد
 ✘ تعداد افک ها {afk} 
@@ -281,12 +291,12 @@ bet_Winner=lambda men , Amount:f'🟢 {men} | {Amount}🪙'
 
 
 
-Winner_private=lambda all  , amount :'''☆ نتیجه بت شما مشخص شد 💰
+Winner_private=lambda all  , amount :f'''☆ نتیجه بت شما مشخص شد 💰
 ✦ نتیجه : باخت 
 ✦ مقدار شرط💵: {amount}
 ✦ سود (ضیان) : {all} لایت کوین 🪙 
 '''
-Loser_private=lambda all  , amount :'''☆ نتیجه بت شما مشخص شد 💰
+Loser_private=lambda all  , amount :f'''☆ نتیجه بت شما مشخص شد 💰
 ✦ نتیجه : باخت 
 ✦ مقدار شرط💵: {amount}
 ✦ سود (ضیان) : {all} لایت کوین 🪙 
@@ -307,6 +317,7 @@ Average_Statics=lambda AFK,Games,Player,Join_Time:f'''#میانگین
 ⚜️        ⚜️        ⚜️        ⚜️        ⚜️    
 '''
 jointime_xlabel='JoinTime'
+jointime_ylabel='Stats'
 
 Game_Analised=lambda Players , teams :f'''بازی انالیز شد 📜🔎\n\n
 {Players}
@@ -332,3 +343,28 @@ next_setted='متن نکست گیم برای شما ثبت شد !'
 how_to_set_next_frame='راهنمای ثبت نکست گیم اختصاصی 🔰 \n - در متن نکست نباید هیچ لینکی وجود داشته باشد ! \n - متن نکست را در جلوی دستور بنویسید !'
 
 Votting=lambda nm: f'رای بر روی {nm} قرار گرفت !'
+
+usr_unbanned=lambda id : f'کاربر {id} از گروه ان بن شد !'
+usr_banned=lambda id : f'کاربر {id} از گروه بن شد !'
+muted=lambda id : f'کاربر {id} میوت شد'
+
+
+temp_banned=lambda id,time : f'کاربر {id} برای {time} دقیقه بن شد !'
+temp_muted=lambda id,time : f'کاربر {id} برای {time} دقیقه میوت شد !'
+
+unlock='گروه باز شد !🔓'
+lock='گروه قفل شد !🔐'
+
+exchange=lambda amount ,coins:f'مقدار {coins} لایت کوین با مبادله ی {amount} دلار به کیف پول شما اضافه شد !'
+wheather=lambda dic:f'''شهر : {dic['result']["شهر"]}
+---------------
+    امروز 🔆
+سرعت باد : {dic["result"]["سرعت باد"]}
+دما : {dic["result"]["دما"]} 
+وضعیت هوا : {dic["result"]["وضعیت هوا"]}
+----------------
+    فردا 🔆 
+دما : {dic["فردا"]["دما"]} 
+وضعیت هوا : {dic["فردا"]["وضعیت هوا"]}
+'''
+report='گزارش برای ادمین ها ارسال شد !'

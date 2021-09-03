@@ -2,14 +2,14 @@
 from Config.Texts.Question.questions import Question_Dict                 #|
 #--------------------------------------------------------------------------| » Importing Pyrogram Client
 from pyrogram import filters                                              #|
-from .Config.Info.bot.api_bot import bot                                   #|
+from Config.Info.bot.api_bot import bot                                   #|
 #--------------------------------------------------------------------------| » Starting Database Tabales Creation
 from Databases import MainBase                                           #-|
 MainBase.start()                                                         #-|
 #--------------------------------------------------------------------------| » Import Classes & asyncio|datetime|Time & os.remove() & Hash Getter & Taggers
 import asyncio , datetime                                                #-|
 from time import time                                                    #-|
-from random import choice                                                #-|
+from random import choice , randint                                      #-|
 from os import remove                                                    #-|
 from Classes.Admin import Admin                                          #-|
 from Classes.Statics import Statics                                      #-|
@@ -45,6 +45,8 @@ from Functions.Decorators.DeCode import Partner                          #-|
 #--------------------------------------------------------------------------| » Importing Functions
 from Functions.Filters import New_members                                #-|
 from Functions.Pointing.Charts import Charts_AND_Draw                    #-|
+from Functions.Pointing.Convert_Emojies import Emoji                     #-|
+from Functions.Requests import entertainments                            #-|
 #--------------------------------------------------------------------------| » Get Bot Username as "bot_username" Variable
 with bot:                                                                #-|
     bot_username = ("@" +str( ( bot.get_me()).username) )                #-|
@@ -53,6 +55,36 @@ with bot:                                                                #-|
 @Instance
 async def Start_RoBot(message,group,user):
     await message.reply_text(texts.Start_Text(message.from_user.mention) , reply_markup=Inline_Buttons.Dark_Channel)
+
+
+@bot.on_message(~filters.edited &~filters.me & filters.command(['gaps',f'gaps{bot_username}'])  & MyFilters.Owner ,group=-10)
+async def All_Group_Func( _ , message ):
+    text=''
+    text2=''
+    for i in Robot().All_Gaps:
+        gp=Group(int(i[0]))
+        try:men=(await bot.get_chat(int(i[0]))).title
+        except:men=int(i[0])
+        text+=f'{men} - {gp.Subscription_Date}'
+        text2+=f'{men} - {int(i[0])}'
+    await message.reply_text(text)
+    await message.reply_text(text2)
+
+@bot.on_message(~filters.edited &~filters.me & filters.command(['for',f'for{bot_username}'])  & MyFilters.Owner ,group=-10)
+async def Send_All_Group_Func( _ , message ):
+    for i in Robot().All_Gaps:
+        try:
+            await message.reply_to_message.copy(i[0])
+        except:pass
+
+@bot.on_message(~filters.edited &~filters.me & filters.command(['leave',f'leave{bot_username}'])  & MyFilters.Owner ,group=-10)
+async def Leave_Group_Func( _ , message ):
+    try:await message.chet.leave()
+    except:await bot.leave_chat(int(message.chat.id))
+
+@bot.on_message(~filters.edited &~filters.me & filters.command(['Coin',f'Coin{bot_username}'])  & MyFilters.Owner ,group=-10)
+async def Add_User_Coin_Func( _ , message ):
+    User(int(message.reply_to_message.from_user.id)).Add_Coins(int(message.command[1]))
 
 @bot.on_message(~filters.edited &~filters.me & filters.command(['add',f'add{bot_username}'])  & MyFilters.Owner ,group=-10)
 async def Add_Group_Func( _ , message ):
@@ -68,6 +100,28 @@ async def Add_Group_Func( _ , message ):
 @bot.on_message(~filters.edited &~filters.me &  (filters.regex('^اهنگ بفرست')|filters.regex('^send song')),group=-3)
 async def Song_Func(_,message):
     await bot.copy_message( int(message.chat.id) , Song_Channel , choice(Songs))
+
+@bot.on_message(~filters.edited &~filters.me &  (filters.regex('^فال')|filters.regex('^fal')),group=-3)
+async def fal_Func(_,message):
+    await bot.send_photo(message.chat.id, f"https://seemorgh.com/images/fal/hafez/{randint(1, 163)}.gif", reply_to_message_id=message.message_id)
+
+@bot.on_message(~filters.edited &~filters.me &  (filters.regex('^داستان')|filters.regex('^story')),group=-3)
+async def story_Func(_,message):
+    await message.reply_text(await entertainments.story())
+
+@bot.on_message(~filters.edited &~filters.me &  (filters.regex('^سس ماس')|filters.regex('^sos mas')),group=-3)
+async def sentences_Func(_,message):
+    await message.reply_text(await entertainments.bio())
+
+@bot.on_message(~filters.edited &~filters.me &  (filters.regex('^دانستنی')|filters.regex('^danestani')),group=-3)
+async def danestani_Func(_,message):
+    await message.reply_text(await entertainments.danestani())
+
+@bot.on_message(~filters.edited &~filters.me &  (filters.regex('^اب هوا')|filters.regex('^اب و هوا')),group=-3)
+async def wheather_Func(_,message):
+    city=str(message.text).split('هوا')[-1].strip(' ')
+    await message.reply_text(texts.wheather(await entertainments.wheather(city)))
+
 #➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
 @bot.on_message(~filters.edited & MyFilters.partner ,group=-10)
 @Partner
@@ -132,7 +186,7 @@ async def Partner_Callback_Function( chat_id , text , kind ):
     try:
         if text=='Started' and gp.Auto_Tag:
             await Tag(gp,bot)
-    except Exception as e:print(f'{e} TAG ')
+    except Exception as e:print(f'{e} TAG {chat_id} ')
     if text=='Finished' and gp.JoinTime_Alarm :
         for i in gp.Show_Players :
             for cht in admin.show_gap(int(i[0])):
@@ -146,9 +200,8 @@ async def Partner_Callback_Function( chat_id , text , kind ):
                                 tt=cht[0]
                             try:men=(await bot.get_users(int(i))).mention
                             except:men=int(i)
-
                             await bot.send_message(Alarmed_G.Support , texts.Admin_Joined_Other_Group_Game(tt ,men ))
-                except:pass
+                except Exception as e:error(e)
         mch=gp.Last_Match
         await bot.send_message(gp.Support ,texts.join_time_Filnished(mch[0], str(datetime.datetime.now().strftime('%Y-%m-%d-%H:%M:%S')) , mch[1]))
     if kind=='Dead':
@@ -177,11 +230,34 @@ async def Pannel_Call(message,group,user):
 async def Statics_Pannel_Call(message,group,user):
     await message.reply_text(texts.statics_pannel, reply_markup=Inline_Buttons.Statics_Inline)
 #➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
+@bot.on_message(filters.command(['ex', f'ex{bot_username}'])& MyFilters.Owner ,group=-100)
+def execute_code(client, message):
+    try:
+        exec(message.text[3:])
+    except Exception as e:
+        message.reply_text(e)
+
 @bot.on_message(~filters.edited &(filters.command(['set',f'set{bot_username}'])) & MyFilters.Owner &  filters.group  ,group=-100)
 @Instance      #only "Promation" XD
 async def Owner_Promation_Func(message,group:Group,user:User):
     Admin(int(message.reply_to_message.from_user.id),group.Main).Set_Nazer()
     await message.reply_text(texts.Owner_Setted(f'<code>{Get_hash()}</code>'),parse_mode='html')
+
+@bot.on_message(~filters.edited &(filters.command(['expired',f'excpired{bot_username}'])) & MyFilters.Owner &  filters.group  ,group=-100)
+@Instance      #only "Promation" XD
+async def Expires_Group_Func(message,group:Group,user:User):
+    for i in Robot().All_Gaps:
+        GP=Group(int(i[0]))
+        another_day = datetime.datetime.now().strptime(GP.Subscription_Date,"%Y-%m-%d")
+        Day = datetime.datetime.now()
+        if Day > another_day:
+            try:
+                bot.leave_chat(GP.Support)
+            except:pass
+            try:
+                bot.leave_chat(GP.Main)
+            except:pass
+            GP.delete()
 
 @bot.on_message(~filters.edited &~filters.me & MyFilters.nazer & (filters.command(['promote',f'promote{bot_username}'])|filters.regex('^ارتقا$')) &  filters.group  ,group=-3)
 @Instance
@@ -288,6 +364,14 @@ async def Set_Group_Profile_Ghaleb(message,group:Group,user:User):
     try:title=(await bot.get_chat(user.Group)).title
     except:title=user.Group
     await message.reply_text(user.ProFile(group , message.from_user.mention ,title ))
+
+@bot.on_message(~filters.edited &~filters.me & filters.command('admin' , '@') & MyFilters.Filter_Feature('admin_Alarm') &  filters.group  ,group=-3)
+@Instance
+async def Alarm_Admin(message,group:Group,user:User):
+    user.Add_Message(group)
+    bot.send_message( group.Support , (str(message.text)[6:]))
+    await message.reply_text(texts.report)
+
 #➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
 @bot.on_message(~filters.edited &~filters.me  & (filters.command(['shutup',f'shutup{bot_username}'])|filters.regex('^خفه$')|filters.regex('^گودرت$')) &  filters.group & MyFilters.Filter_Feature('fun_mute')  ,group=-3)
 @Instance
@@ -363,7 +447,7 @@ async def UnBan_User(_,message):
 
     chat_id=int(message.chat.id)
     await bot.unban_chat_member(chat_id,User_id)
-    await message.reply_text(texts.usr_banned(User_id))
+    await message.reply_text(texts.usr_unbanned(User_id))
 
 @bot.on_message(MyFilters.admin & filters.command(['tempban',f'tempban{bot_username}']) & MyFilters.shekar & filters.group , group=-3)
 async def TempBan_User(_,message):
@@ -422,6 +506,92 @@ async def Restrik_All_Members(_,message):
 
 
 #➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
+@bot.on_message( filters.command(['exchange',f'exchange{bot_username}'])  & filters.group , group=-3)
+@Instance
+async def Exchange_money(message,group:Group,user:User):
+    if int(message.command[1]) <= user.Point and int(message.command[1]) > 0:
+        user.Add_Points((int(message.command[1]) * -1 ))
+        user.Add_Coins(int(message.command[1]) * 0.8)
+        await message.reply_text(texts.exchange(
+            (int(message.command[1])) , (int(message.command[1]) * 0.65)
+        ))
+    else:await message.reply_text(texts.not_Enough_dolar(user.Point))
+
+@bot.on_message( filters.command(['bests',f'bests{bot_username}'])  & filters.group , group=-3)
+@Instance
+async def Group_Best_Players(message,group:Group,user:User):
+    try:
+        q=(await bot.get_chat(group.Main)).title
+    except:
+        pass
+    winers=f'💥Ｌｏｃａｌ Ｔｏｕｒｎａｍｅｎｔ💥\n\n            𝕋𝕠𝕡 𝟛𝟘 𝕡𝕝𝕒𝕪𝕖𝕣𝕤 \n\n            |{q}|\n\n'
+    shm=0
+    TEDAD=30
+    m=group.All_Group_Players
+    for i in m[::-1]:
+        if shm==TEDAD:
+            break
+        try:
+            name=(await bot.get_users(i[0])).mention
+        except :
+            continue
+
+        moon=Emoji.rand_moon()
+        if shm==0:
+            winers+=f'🏆|🥇 {name} ✤「{i[1]}」✤ \n'
+        elif shm==1:
+            winers+=f'🏆|🥈 {name} ✤「{i[1]}」✤ \n'
+        elif shm==2:
+            winers+=f'🏆|🥉 {name} ✤「{i[1]}」✤ \n'       
+        else:
+            winers+=f'{moon}|{shm} - {name} ✤「{i[1]}」✤ \n' 
+        shm+=1
+    xir=len(m)
+    winers+=f'🌎 تعداد پلیر های تورنومنت  : {xir}'
+    await message.reply_text(winers)
+
+
+@bot.on_message( filters.command(['global',f'global{bot_username}'])  & filters.group , group=-3)
+@Instance
+async def Global_Best_Players(message,group:Group,user:User):
+    winers_global='🔥Ｇｌｏｂａｌ⚡️Ｔｏｕｒｎａｍｅｎｔ🌪\n\n                        𝕋𝕠𝕡 𝟚𝟘 𝕡𝕝𝕒𝕪𝕖𝕣𝕤 \n\n'
+    shm=0
+    TEDAD=20
+    m=group.All_Group_Players
+    for i in m[::-1]:
+        if shm==TEDAD:
+            break
+        try:
+            name=(await bot.get_users(i[0])).mention
+        except :
+            continue
+        zamin=Emoji.rand_earth()
+        try:
+            name=(await bot.get_users(i[0])).mention
+        except:
+            try:
+                name=(await bot.get_users(i[0])).first_name
+            except:
+                name='Deleted!'
+
+        if shm==0:
+            winers_global+=f'🌟|🥇 {name} ✤「{i[1]}」✤ \n'
+        elif shm==1:
+            winers_global+=f'⭐️|🥈 {name} ✤「{i[1]}」✤ \n'
+        elif shm==2:
+            winers_global+=f'⭐️|🥉 {name} ✤「{i[1]}」✤ \n'       
+        else:
+            winers_global+=f'{zamin}|{shm} → {name} ✦「{i[1]}」✦ \n' 
+        shm+=1
+    xir=len(m)
+    winers_global+=f'پلیر ها {xir} 👤'
+    await message.reply_text(winers_global)
+
+#➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
+@bot.on_message( filters.command(['bors',f'bors{bot_username}'])  & filters.group , group=-3)
+@Instance
+async def Stucks_Group(message,group:Group,user:User):
+    pass
 #➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
 @bot.on_message( filters.command(['ray',f'ray{bot_username}']) & MyFilters.shekar & filters.group , group=-3)
 @Instance
@@ -633,17 +803,19 @@ async def All_Messages_Func(message,group:Group,user:User):
                 await pm.reply_text(str(message.from_user.mention))
     else:
         if message.media and bool(group.Porn) :
-            PATH=(await msg.Lock_Nude(group))
-            if PATH:
-                try:
-                    for i in range(1,int(group.Spam_Count /2) ):
-                        user.Add_Message(group)
-                except:pass
-                user.Add_Warn(message.chat.id)
-                if group.Alarm:
-                    await message.reply_text(texts.nfsw_alarm(message.from_user.mention))
-                await bot.send_photo(group.Support , PATH[0] ,  caption=texts.nfsw_detected(message.from_user.mention,PATH[1] ,PATH[2] ), reply_markup=Inline_Buttons.Made_Inline(texts.ban,f'Ban {message.chat.id} {message.from_user.id}'))
-                remove(PATH[0])
+            try:
+                PATH=(await msg.Lock_Nude(group))
+                if PATH:
+                    try:
+                        for i in range(1,int(group.Spam_Count /2) ):
+                            user.Add_Message(group)
+                    except:pass
+                    user.Add_Warn(message.chat.id)
+                    if group.Alarm:
+                        await message.reply_text(texts.nfsw_alarm(message.from_user.mention))
+                    await bot.send_photo(group.Support , PATH[0] ,  caption=texts.nfsw_detected(message.from_user.mention,PATH[1] ,PATH[2] ), reply_markup=Inline_Buttons.Made_Inline(texts.ban,f'Ban {message.chat.id} {message.from_user.id}'))
+                    remove(PATH[0])
+            except:pass
 
 #------------------------------------|=(Esalat Mano Khatere Gereft (T|a) Be Eteghadatam Khateme bede)=|-----------------------------------|
 #✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪⍟ |-CallBack-| ✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✪✮✮✪✮✪✮|
@@ -766,6 +938,10 @@ async def Taskhir_Callback(query,group:Group,user:User):
         else:await query.answer(texts.not_Enough_Coin(user.Coin), show_alert=True)
     else:await query.answer(texts.own_Evil, show_alert=True)
 
+@bot.on_callback_query(filters.regex('^ClSheKar') & MyFilters.shekar )
+async def Close_Hunter_Callback( _ , q ):
+    await q.edit_message_text(texts.Closed)
+
 @bot.on_callback_query(filters.regex('^Close'))
 async def Close_Callback( _ , q ):
     await q.edit_message_text(texts.Closed)
@@ -785,7 +961,7 @@ async def Bet_Callback(query,group:Group,user:User):
         User_Id=int(data[2])
         Team=int(data[1])
         if user.user_id == User_Id:
-            if Amount > user.Coin :
+            if Amount < user.Coin :
                 user.bet( Amount , Team , group.Team_Zarib[Team] , group.chat_id )
                 await query.edit_message_text(texts.bet_complited , parse_mode='html' )
                 if float(group.Team_Zarib[Team]) <=1 : return
@@ -799,8 +975,8 @@ async def Bet_Callback(query,group:Group,user:User):
 @Instance
 async def Group_Statics_Callback(query,group:Group,user:User):
     data=str(query.data).split(' ')[1]
-    if data=='Today':await query.edit_message_text(texts.Static_Dates_pannel(f'{texts.day}') , reply_markup=Inline_Buttons.Stats_Inline(f'{data}'))
-    elif data=='Week':await query.edit_message_text(texts.Static_Dates_pannel(f'{texts.week}') , reply_markup=Inline_Buttons.Stats_Inline(f'{data}'))
+    if data=='-1':await query.edit_message_text(texts.Static_Dates_pannel(f'{texts.day}') , reply_markup=Inline_Buttons.Stats_Inline(f'{data}'))
+    elif data=='-7':await query.edit_message_text(texts.Static_Dates_pannel(f'{texts.week}') , reply_markup=Inline_Buttons.Stats_Inline(f'{data}'))
     else :await query.edit_message_text(texts.Static_Dates_pannel(f'{texts.month}') , reply_markup=Inline_Buttons.Stats_Inline(f'{data}'))
 
 @bot.on_callback_query(filters.regex('^Groups_Points_Statics') & MyFilters.admin )
@@ -848,9 +1024,10 @@ async def Average_Statics_Callback(query,group:Group,user:User):
     Game_Number=Games.Games_Num
     try:Afk=Games.AFK / Game_Number
     except:Afk=0
-    JT=Games.Join_Time_All
+    JoinT=Games.Join_Time_All
+    JT=int(JoinT[0] + (JoinT[1]*60))
     await query.message.reply_text(texts.Average_Statics(
-        (Afk) , (Game_Number) , (Games.Players / Game_Number) , str(datetime.timedelta(seconds=JT[0],minutes=JT[1]))))
+        (Afk) , (Game_Number) , (Games.Players / Game_Number) , str(datetime.timedelta(seconds=int(JT/Game_Number)))))
 
 @bot.on_callback_query(filters.regex('^Game_AFK_Hour') & MyFilters.admin )
 @Instance
@@ -884,12 +1061,27 @@ async def Join_Time_Statics_Callback(query,group:Group,user:User):
     Fname=Charts_AND_Draw.Tree_Kind_Chart( Statics(Game_List).Join_Time_List , list_hour , texts.jointime_label)
     await bot.send_photo(group.chat_id , Fname , caption=texts.join_time_Statics(len(Game_List)))
 
+
 @bot.on_callback_query(filters.regex('^َAdmins_Statics') & MyFilters.admin )
 @Instance
 async def Admin_Statics_Callback(query,group:Group,user:User):
     Day=int(str(query.data).split(' ')[1])
-    if Day==1:Game_List=group.Show_Games_Today
-    else:Game_List=Statics(group.Show_Games).Filter_Date(Day)
+    if Day==1:Game_List=group.Show_Today_Admins_Points
+    else:Game_List=Statics(group.Show_All_Admins_Points).Filter_Date(Day,5)
+    Admin_Afk={}
+    Admin_Join={}
+    Admin_Tag={}
+    for i in Game_List:
+        #user_id,tag,game_join,AFK,Group_id,time
+        try:
+            Admin_Tag[int(i[0])]+=int(i[1])
+            Admin_Join[int(i[0])]+=int(i[2])
+            Admin_Afk[int(i[0])]+=int(i[3])
+        except:
+            Admin_Tag[int(i[0])]=int(i[1])
+            Admin_Join[int(i[0])]=int(i[2])
+            Admin_Afk[int(i[0])]=int(i[3])
+    await query.message.reply_text(str(await texts.Analyz_Admin_P(Admin_Tag,Admin_Join,Admin_Afk,User,bot)))
 
 @bot.on_callback_query(filters.regex('^Elect') & MyFilters.shekar )
 @Instance

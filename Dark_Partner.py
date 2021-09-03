@@ -3,7 +3,7 @@ from Config.Info.bot.partner_bot import bot                              #-|
 from Config.Info.bot.api_bot import bot_username                         #-|
 #--------------------------------------------------------------------------| » Import Classes
 from Classes.Filters import Filters                                      #-|
-from Classes.Group import Group                                         #-|
+from Classes.Group import Group                                          #-|
 from Classes.IO import IO                                                #-|
 from Classes.User import User                                            #-|
 from Classes.Admin import Admin                                          #-|
@@ -28,6 +28,7 @@ Join_Time={}                                                             #-|
 Hash={}                                                                  #-|
 Links={}                                                                 #-|
 Next_game={}                                                             #-|
+sec={}                                                                   #-|
 #--------------------------------------------------------------------------| » Handlers Start 
 @bot.on_message(~filters.edited &MyFilters.Dark & filters.private )
 @Partner
@@ -166,7 +167,7 @@ async def USER_AFK_FUNC(message,group:Group,user:User):
         if admin.is_admin:
             admin.Add_Point(afk=1)
             code=IO(texts.Admin_Afked(men),group.chat_id,'admin_alarm')
-            await bot.send_message(bot_username,str(code))
+            await bot.send_message(bot_username,(code.code))
     except:pass
     usr.AFK(group)
     user.Add_Coins(-100)
@@ -193,38 +194,37 @@ async def PLAYING_STOPPED_FUNC(message,group:Group,user:User):
         code=IO(str(await message.click(0)),group.chat_id , kind='JoinTime_Alarm')
         await bot.send_message(bot_username,str(code))
     group.Join_time_Started
-    Join_Time[int(group.chat_id)]=[int(time.time())]
     await bot.send_message(bot_username,str(IO('Started',group.chat_id)))
     
 @bot.on_message(~filters.edited &(filters.regex(r'بازی شروع شد') |filters.regex(r'بازی شروع شد') | filters.regex(r'تعداد بازیکنا به پنج') |filters.regex(r'تعداد بازیکنا کافی نیست') | filters.regex(r'چقدر کمین'))  & filters.group & MyFilters.WWBOTS,group=-10)
 @Instance
 async def PLAYING_STARTED_FUNC(message,group:Group,user:User):
-    Join_Time[int(group.chat_id)].append(int(time.time()))
+    sec[int(message.chat.id)] = int(time.time()) - Join_Time[int(group.chat_id)]
     group.Join_time_Finished
     sup_list=[]
     main_list=[]
     try:
         if group.Auto_DeleteTag:
-            async for i in bot.iter_history(group.chat_id , 400):
+            async for i in bot.iter_history(group.chat_id , 1000):
                 if i.mentioned :
-                    main_list.append(int(i.message_id))
-                    if len(main_list) > 80 :
-                        await bot.delete_messages(group.chat_id , main_list)
-                    # try:
-                    #     await i.delete()
-                    # except:pass
+                    # main_list.append(int(i.message_id))
+                    # if len(main_list) > 80 :
+                    #     await bot.delete_messages(group.chat_id , main_list)
+                    try:
+                        await i.delete()
+                    except:pass
             await bot.delete_messages(group.chat_id , main_list)
     except Exception as e:print(e)
     try:
         if group.Auto_DeleteTag_Sup:
-            async for i in bot.iter_history(group.Support , 400):
+            async for i in bot.iter_history(group.Support , 1000):
                 if i.mentioned :
-                    sup_list.append(int(i.message_id))
-                    if len(sup_list) > 80 :
-                        await bot.delete_messages(group.chat_id , sup_list)
-                    # try:
-                    #     await i.delete()
-                    # except:pass
+                #     sup_list.append(int(i.message_id))
+                #     if len(sup_list) > 80 :
+                #         await bot.delete_messages(group.chat_id , sup_list)
+                    try:
+                        await i.delete()
+                    except:pass
             await bot.delete_messages(group.chat_id , sup_list)
     except Exception as e:print(e)
 
@@ -233,6 +233,7 @@ async def PLAYING_STARTED_FUNC(message,group:Group,user:User):
 async def ALL_MSG_WW_BOTS_FUNC(message,group:Group,user:User):
     if not group:
         await message.chat.leave()
+    if str(message.text) == '#players: 0':Join_Time[int(group.chat_id)]=[int(time.time())]
     if 'بازیکن های زنده:' in str(message.text) or 'بازیکنان زنده :' in str(message.text):
         if group.List_Pin :
             try:await message.pin()
@@ -244,9 +245,10 @@ async def ALL_MSG_WW_BOTS_FUNC(message,group:Group,user:User):
                 await bot.send_message(bot_username,str(IO('@amiralirj_pv :(',group.chat_id,'Next_Game')))
         if count[0] == count[1]:
             Hash[int(group.chat_id)]=int(random.randint(1,99999999999999))
-            try:jointime = str(datetime.timedelta(seconds=abs(Join_Time[group.chat_id][1] - Join_Time[group.chat_id][0] )))
-            except:jointime = str(datetime.timedelta(seconds=abs(Join_Time[group.chat_id][0] - int(time.time()))))
+            secon=sec[int(message.chat.id)]
+            jointime = datetime.timedelta(seconds=secon)
             #hash,Join_Time,players
+            print(f'\n\n\n\n\n {jointime} \n\n\n\n\n ')
             group.Game_Started(Hash[int(group.chat_id)],jointime,count[1])
             Players=[]
             for ent in message.entities:
@@ -255,7 +257,7 @@ async def ALL_MSG_WW_BOTS_FUNC(message,group:Group,user:User):
                     a=Admin(int(ent.user.id),group.Main)
                     if a.is_admin:
                         a.Add_Point(join=1)
-                except:pass
+                except Exception as e:error(f'{e} Partner 258')
             if len(Players)>4:
                 print('Game Added')
                 await group.Add_Players(Players,bot)

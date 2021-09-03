@@ -23,13 +23,13 @@ class Statics:
                 Older.append(i)
         return Older
 
-    def Filter_Date(self,Date):
+    def Filter_Date(self,Date,index=4):
         li=[]
         Dt=(datetime.datetime.now() + datetime.timedelta(days=Date))
         for i in self.list :
             print('------------------------------------')
             print(Dt)
-            Day = datetime.datetime.now().strptime(i[4],"%Y-%m-%d")
+            Day = datetime.datetime.now().strptime(i[index],"%Y-%m-%d")
             print(Day)
             if Day > Dt:
                 li.append(i)
@@ -40,15 +40,15 @@ class Statics:
         # time,players,hour,afk,date
         Main_Point=0
         for i in self.list :
-            join_time=str(i[0]).split(':')
-            Join_Sec=int(join_time[-2]*60) + int(join_time[-1])
+            join_time=self.Join_Time_All
+            Join_Sec=int( join_time[0] + (join_time[1] * 60) )
             Join_Time_Point=Join_Sec ** (1/3)
             #---------------------------------------------------
             Players=int(i[1])
             Players_Point=Players ** (5/3)
             #---------------------------------------------------
             Afk=int(i[3])
-            AFK_Point=((Afk+1)** 3 )
+            AFK_Point=((Afk)** 3 )
             #---------------------------------------------------
             Main_Point+=(
                 (Players_Point / Join_Time_Point ) - AFK_Point
@@ -75,7 +75,7 @@ class Statics:
         for i in self.list:
             join_time=str(i[0]).split(':')
             Join_Sec=int(int(join_time[-2] * 60) + int(join_time[-1]))
-            if Join_Sec<100000:
+            if Join_Sec<10000:
                 JOIN_TIME +=int(Join_Sec)
         return JOIN_TIME
 
@@ -87,7 +87,7 @@ class Statics:
             join_time=str(i[0]).split(':')
             Join_Sec=int(join_time[-1])
             join_min=int(join_time[-2])
-            if Join_Sec<100000:
+            if join_min<30:
                 JOIN_TIME +=int(Join_Sec)
                 JOINTIME_MIN+=int(join_min)
         return [JOIN_TIME,JOINTIME_MIN]

@@ -12,7 +12,7 @@ def IO(O_F):
         return '❌'
 
 Button_JoinTime_Link_Maker=lambda link :InlineKeyboardMarkup([[InlineKeyboardButton(f'ᴊᴏɪɴ ᴛᴏ ɢᴀᴍᴇ', url=f'{link}')]])
-Dark_Channel = InlineKeyboardMarkup([[InlineKeyboardButton('ᴅᴀʀᴋ ᴄʜᴀɴɴᴇʟ', url='https://t.me/DarkhelperChannel')]])
+Dark_Channel = InlineKeyboardMarkup([[InlineKeyboardButton('ᴅᴀʀᴋ ᴄʜᴀɴɴᴇʟ', url='https://t.me/DarkhelperNews')]])
 
 def Channel_Text(text,url):
     return InlineKeyboardMarkup([[InlineKeyboardButton(f'{text}', url=f'{url}')]])
@@ -35,7 +35,7 @@ def Election_Inline(List,group):
             if group.Role_Saver:inlines.append([InlineKeyboardButton(f'{i[3][:15]}', callback_data=f'Elect {i[0]}'),InlineKeyboardButton(f'{rl}', callback_data=f'Elect {i[3][:15]}')])
             else:inlines.append([InlineKeyboardButton(f'{i[3][:15]}', callback_data=f'Elect {i[3][:15]}')])
     inlines.append([InlineKeyboardButton(f'Wait', callback_data=f'Elect Wait')])
-    inlines.append([InlineKeyboardButton('❌ بستن ❌', callback_data='Close')])
+    inlines.append([InlineKeyboardButton('❌ بستن ❌', callback_data='ClSheKar')])
     return InlineKeyboardMarkup(inlines)
 #------------------------------------------------------------------------------------------------------------------
 
@@ -72,20 +72,20 @@ def Bet_Inline(Group,User_id,Amount):
         indx+=1
 
     zz = InlineKeyboardMarkup([
-        [InlineKeyboardButton('👩🏻‍🦰👨🏻‍🦱 روستا 👩🏻‍🦰👨🏻‍🦱', callback_data= f'Bet 0 {User_id} {Amount}'),InlineKeyboardButton(f'🔝 {zarib[0]} 💲', callback_data= f'Bet 0 {User_id} {Amount}')],
-        [InlineKeyboardButton('👥 فرقه 👥', callback_data=   f'Bet 1 {User_id} {Amount}'),InlineKeyboardButton(f'🔝 {zarib[1]} 💲', callback_data= f'Bet 1 {User_id} {Amount}')],
-        [InlineKeyboardButton('🐺 گرگ 🐺', callback_data=    f'Bet 2 {User_id} {Amount}'),InlineKeyboardButton(f'🔝 {zarib[2]} 💲', callback_data= f'Bet 2 {User_id} {Amount}')],
-        [InlineKeyboardButton('🔪 قاتل 🔪', callback_data=   f'Bet 3 {User_id} {Amount}'),InlineKeyboardButton(f'🔝 {zarib[3]} 💲', callback_data= f'Bet 3 {User_id} {Amount}')],
-        [InlineKeyboardButton(f'{First_Mature}', callback_data= f'Bet 4 {User_id} {Amount}'),InlineKeyboardButton(f'🔝 {zarib[4]} 💲', callback_data= f'Bet 4 {User_id} {Amount}')],
-        [InlineKeyboardButton(f'{sec_Mature}', callback_data=      f'Bet 5 {User_id} {Amount}'),InlineKeyboardButton(f'🔝 {zarib[5]} 💲', callback_data= f'Bet 5 {User_id} {Amount}')],
-        [InlineKeyboardButton('👺 منافق 👺', callback_data=  f'Bet 6 {User_id} {Amount}'),InlineKeyboardButton(f'🔝 {zarib[6]} 💲', callback_data= f'Bet 6 {User_id} {Amount}')],
+        [InlineKeyboardButton('👩🏻‍🦰👨🏻‍🦱 روستا 👩🏻‍🦰👨🏻‍🦱', callback_data= f'Bet 0 {User_id} {Amount}'),InlineKeyboardButton(f'🔝 {zarib[0]:.2f} 💲', callback_data= f'Bet 0 {User_id} {Amount}')],
+        [InlineKeyboardButton('👥 فرقه 👥', callback_data=   f'Bet 1 {User_id} {Amount}'),InlineKeyboardButton(f'🔝 {zarib[1]:.2f} 💲', callback_data= f'Bet 1 {User_id} {Amount}')],
+        [InlineKeyboardButton('🐺 گرگ 🐺', callback_data=    f'Bet 2 {User_id} {Amount}'),InlineKeyboardButton(f'🔝 {zarib[2]:.2f} 💲', callback_data= f'Bet 2 {User_id} {Amount}')],
+        [InlineKeyboardButton('🔪 قاتل 🔪', callback_data=   f'Bet 3 {User_id} {Amount}'),InlineKeyboardButton(f'🔝 {zarib[3]:.2f} 💲', callback_data= f'Bet 3 {User_id} {Amount}')],
+        [InlineKeyboardButton(f'{First_Mature}', callback_data= f'Bet 4 {User_id} {Amount}'),InlineKeyboardButton(f'🔝 {zarib[4]:.2f} 💲', callback_data= f'Bet 4 {User_id} {Amount}')],
+        [InlineKeyboardButton(f'{sec_Mature}', callback_data=      f'Bet 5 {User_id} {Amount}'),InlineKeyboardButton(f'🔝 {zarib[5]:.2f} 💲', callback_data= f'Bet 5 {User_id} {Amount}')],
+        [InlineKeyboardButton('👺 منافق 👺', callback_data=  f'Bet 6 {User_id} {Amount}'),InlineKeyboardButton(f'🔝 {zarib[6]:.2f} 💲', callback_data= f'Bet 6 {User_id} {Amount}')],
         [InlineKeyboardButton('⭕️ لغو ❌', callback_data=f'Bet None')]])
     return zz
 
 
 def Main_Pannel(Group): 
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton(f'{Group.Subscription_Date} ♻️',url='https://t.me/DarkhelperChannel/3')],
+        [InlineKeyboardButton(f'{Group.Subscription_Date} ♻️',url='https://t.me/DarkhelperNews/3')],
         [InlineKeyboardButton('تنظیمات گروه ⚙️', callback_data='Setting Group'),InlineKeyboardButton('تنظیمات گرگینه ⚙️', callback_data='Setting Werewolf')],
         [InlineKeyboardButton('❌ بستن ❌', callback_data='Close')]
     ])
@@ -93,14 +93,14 @@ def Main_Pannel(Group):
 def Werewolf_Pannel(Group,titles,link):
     Bot_King_List=Get_Turn_Bot_Emoji(Group.Bot_Kind)
     if link==None:
-        link='https://t.me/DarkhelperChannel'
+        link='https://t.me/DarkhelperNews'
     if titles==None:
         titles=['none','none']
 
 
     return InlineKeyboardMarkup([
         [InlineKeyboardButton(f'✦ گروه اصلی',url=f'{link}'),InlineKeyboardButton(f'{titles[0]}',url=f'{link}')],
-        [InlineKeyboardButton(f'✦ گروه پشتیبانی',url=f'https://t.me/DarkhelperChannel'),InlineKeyboardButton(f'{titles[1]}',url='https://t.me/DarkhelperChannel')],
+        [InlineKeyboardButton(f'✦ گروه پشتیبانی',url=f'https://t.me/DarkhelperNews'),InlineKeyboardButton(f'{titles[1]}',url='https://t.me/DarkhelperNews')],
         [InlineKeyboardButton('🛠🔔 تگ', callback_data='Pannel Tag')],
         [InlineKeyboardButton('🛠📢 اطلاع رسانی', callback_data='Pannel Notifications')],
         [InlineKeyboardButton('🛠📌 پین', callback_data='Pannel Pin')],
@@ -208,7 +208,7 @@ def Pannel_Spam(Group):
 def Group_Pannel(group):
     channel=group.Show_Channel
     if not channel :
-        channel = 'https://t.me/DarkhelperChannel'
+        channel = 'https://t.me/DarkhelperNews'
     return InlineKeyboardMarkup([ 
 
         [InlineKeyboardButton(f' 🛠🔞 قفل پورن', callback_data=f'Pannel Porn')],

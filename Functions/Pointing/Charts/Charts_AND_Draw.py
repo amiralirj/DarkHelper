@@ -181,11 +181,11 @@ def Pie_Chart(afk,plyr,labels , title):
 def Tree_Kind_Chart(list_1 , list_2,title):
     plt.figure(figsize=(9, 3))
     plt.subplot(131)
-    plt.bar(list_1, list_2)
+    plt.bar(list_2,list_1)
     plt.subplot(132)
-    plt.scatter(list_1, list_2)
+    plt.scatter(list_2,list_1)
     plt.subplot(133)
-    plt.plot(list_1, list_2)
+    plt.plot(list_2,list_1)
     plt.suptitle(title)
 
     # plt.plot(list_hour,list_player)

@@ -17,6 +17,11 @@ def show_emt(points:int,emojis):
         boronz=f'{emojis[2]}' * boronz_count
     return [medal,tala,boronz]
 
+zamin_list=[ '🌏', '🌍', '🌎']
+def rand_earth():
+    emj=random.choice(zamin_list)
+    return emj
+
 def rand_moon():
     moon_list=['🌕','🌖', '🌗' ,'🌘', '🌑', '🌒', '🌓', '🌔']
     radom_moon=random.choice(moon_list)
